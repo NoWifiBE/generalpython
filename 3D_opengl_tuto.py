@@ -55,8 +55,12 @@ vertex_buffer = glGenBuffers(1)
 glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer)
 glBufferData(GL_ARRAY_BUFFER, ArrayDatatype.arrayByteCount(vertices), vertices, GL_STATIC_DRAW)
 
-glEnableVertexAttribArray(0)
-glVertexAttribPointer(0, 4, GL_FLOAT, False, 0, ctypes.c_void_p(0))
+position = glGetAttribLocation(shader_program, 'position')
+if position != -1:
+    glEnableVertexAttribArray(position)
+    glVertexAttribPointer(position, 4, GL_FLOAT, False, 0, ctypes.c_void_p(0))
+else:
+    print('inactive attribute {}'.format(position))
 
 glBindBuffer(GL_ARRAY_BUFFER, 0)
 glBindVertexArray(0)
@@ -75,20 +79,20 @@ while fini == 0:
             fini = 1
     
     # TICK
-    
 
-    # DESSIN  
-    
-    pygame.display.flip()
-    
-    clock.tick(60)
-    
+    # DESSIN
+    glClearColor(1, 0.8, 0.8, 1)
+    glClear(GL_COLOR_BUFFER_BIT)
+
     glUseProgram(shader_program)
                          
     glBindVertexArray(vertex_array_object)
     glDrawArrays(GL_TRIANGLES, 0, 3)
     glBindVertexArray(0)
                          
-    glUseProgram(0)  
-    
+    glUseProgram(0)
+
+    pygame.display.flip()
+    clock.tick(60)
+
 pygame.quit()
