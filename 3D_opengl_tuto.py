@@ -17,17 +17,29 @@ VERT = [0, 1, 0]
 BLEU = [0, 0, 1]
 
 vertex_shader = '''
+#version 330
 // contenu du vertex shader
+in vec4 position;
+
+void main() {
+    gl_Position = position;
+}
 '''
 
 fragment_shader = '''
+#version 330
 // contenu du fragment shader
+
+out vec4 pixel;
+
+void main() {
+    pixel = vec4(1, 0.6, 0, 1);
+}
 '''
 
 shader_program = shaders.compileProgram(
     shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
     shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
-
 
 vertices = farray([
     0.6, 0.6, 0.0, 1.0,
@@ -41,7 +53,7 @@ glBindVertexArray(vertex_array_object)
 
 vertex_buffer = glGenBuffers(1)
 glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer)
-glBufferData(GL_ARRAY_BUFFER, 48, vertices, GL_STATIC_DRAW)
+glBufferData(GL_ARRAY_BUFFER, ArrayDatatype.arrayByteCount(vertices), vertices, GL_STATIC_DRAW)
 
 glEnableVertexAttribArray(0)
 glVertexAttribPointer(0, 4, GL_FLOAT, False, 0, ctypes.c_void_p(0))
@@ -73,8 +85,8 @@ while fini == 0:
     
     glUseProgram(shader_program)
                          
-    glBindVertexArray(vertex_array_object)		     
     glBindVertexArray(vertex_array_object)
+    glDrawArrays(GL_TRIANGLES, 0, 3)
     glBindVertexArray(0)
                          
     glUseProgram(0)  
